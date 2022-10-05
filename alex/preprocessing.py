@@ -2,29 +2,18 @@ import re
 import pandas as pd
 
 
-TRAIN, TEST, SUBMISSION = 0, 1, 2
-
-class Moea():
+class TextProcessor():
     def __init__(self):
-        # Paths:
-        self.dir_data = '/srv/dataset/datafbp'
-        self.train_path = f'{self.dir_data}/train.csv'
-        self.test_path = f'{self.dir_data}/test.csv'
-        self.submission_path = f'{self.dir_data}/sample_submission.csv'
+        # Preprocessing instruments:
         self.incorrect_substitutions = ['.The', '.I', '.For']
         self.correct_substitutions = ['. The', '. I', '. For']
 
-    def load_data(self, type_data):
+    @staticmethod
+    def load_data(filename):
         """Load data from CSV to Pandas DataFrame.
-        :param type_data: type data to loading (train, test or submission).
+        :param filename: path to file CSV
         :return: DataFrame from CSV.
         """
-        if type_data == TRAIN:
-            filename = self.train_path
-        elif type_data == TEST:
-            filename = self.test_path
-        elif type_data == SUBMISSION:
-            filename = self.submission_path
         return pd.read_csv(filename)
 
     def preprocess(self, text):
@@ -40,12 +29,12 @@ class Moea():
 
         return text
 
-    def get_model(self):
-        pass
+    def do_preprocessing(self, filename):
+        """
+        :param filename:
+        :return:
+        """
+        df = TextProcessor.load_data(filename=filename)
+        text = df.apply(self.preprocess)
 
-
-if __name__ == ('__main__'):
-    m = Moea()
-    data = m.load_data(type_data=TRAIN)
-    preprocessed_data = data.full_text.apply(m.preprocess)
-    print(preprocessed_data)
+        return text
